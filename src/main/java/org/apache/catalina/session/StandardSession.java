@@ -340,16 +340,18 @@ public class StandardSession implements HttpSession, Session, Serializable {
     @Override
     public void setId(String id, boolean notify) {
 
+        //如果这个id已经存在，先从Manager中删除
         if ((this.id != null) && (manager != null))
             manager.remove(this);
 
         this.id = id;
 
+        //添加新的Session,对于ManagerBase来说就是添加到ManagerBase的sessions这个map中
         if (manager != null)
             manager.add(this);
 
         if (notify) {
-            tellNew();
+            tellNew();     //这里面完成了HttpSessionListener事件通知
         }
     }
 
@@ -360,22 +362,27 @@ public class StandardSession implements HttpSession, Session, Serializable {
      */
     public void tellNew() {
 
+        // 通知org.apache.catalina.SessionListener
         // Notify interested session event listeners
         fireSessionEvent(Session.SESSION_CREATED_EVENT, null);
 
+        // 获取Context内部的LifecycleListener并判断是否为HttpSessionListener
         // Notify interested application event listeners
         Context context = manager.getContext();
         Object listeners[] = context.getApplicationLifecycleListeners();
         if (listeners != null && listeners.length > 0) {
+            //创建HttpSessionEvent
             HttpSessionEvent event =
                 new HttpSessionEvent(getSession());
             for (Object o : listeners) {
                 if (!(o instanceof HttpSessionListener))
                     continue;
                 HttpSessionListener listener = (HttpSessionListener) o;
-                try {
+                try {//注意这是容器内部事件
                     context.fireContainerEvent("beforeSessionCreated", listener);
+                    //触发Session Created 事件
                     listener.sessionCreated(event);
+                    //注意这也是容器内部事件
                     context.fireContainerEvent("afterSessionCreated", listener);
                 } catch (Throwable t) {
                     ExceptionUtils.handleThrowable(t);
