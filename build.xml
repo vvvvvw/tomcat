@@ -931,7 +931,7 @@
 
   <target name="compile-prepare">
     <!-- Add the builtin catalina.properties -->
-    <copy todir="java/org/apache/catalina/startup"
+    <copy todir="src/main/java/org/apache/catalina/startup"
           file="conf/catalina.properties" encoding="ISO-8859-1">
       <filterset refid="version.filters"/>
     </copy>
@@ -962,7 +962,7 @@
     <!-- Copy static resource files -->
     <copy todir="${tomcat.classes}" encoding="ISO-8859-1">
       <filterset refid="version.filters"/>
-      <fileset dir="java">
+      <fileset dir="src/main/java">
         <include name="**/*.properties"/>
         <exclude name="**/LocalStrings*.properties"/>
         <exclude name="**/Messages*.properties"/>
@@ -976,8 +976,8 @@
     <!-- Convert the message files from UTF-8 to ASCII. This can be removed
     after upgrading to Java 9+ as the minimum JRE and specifying the encoding
     when loading the ResourceBundles -->
-    <native2ascii src="java" dest="${tomcat.classes}" includes="**/LocalStrings.properties,**/Messages*.properties" encoding="UTF-8"/>
-    <native2ascii src="java" dest="${tomcat.i18n}" includes="**/LocalStrings_*.properties" encoding="UTF-8"/>
+    <native2ascii src="src/main/java" dest="${tomcat.classes}" includes="**/LocalStrings.properties,**/Messages*.properties" encoding="UTF-8"/>
+    <native2ascii src="src/main/java" dest="${tomcat.i18n}" includes="**/LocalStrings_*.properties" encoding="UTF-8"/>
 
   </target>
 
@@ -1287,7 +1287,7 @@
       <filterset refid="version.filters"/>
     </copy>
     <copy tofile="${tomcat.build}/webapps/docs/mbeans-descriptors.dtd"
-            file="java/org/apache/tomcat/util/modeler/mbeans-descriptors.dtd" />
+            file="src/main/java/org/apache/tomcat/util/modeler/mbeans-descriptors.dtd" />
 
     <copy   tofile="${tomcat.build}/webapps/docs/appdev/sample/build.xml"
               file="webapps/docs/appdev/build.xml.txt"/>
@@ -1687,7 +1687,7 @@
     <echo>Generating Reflection Less Introspection to: ${xreflect.directory}</echo>
     <mkdir dir="${xreflect.directory}"/>
     <copy todir="${xreflect.directory}/sources">
-      <fileset dir="java"/>
+      <fileset dir="src/main/java"/>
     </copy>
     <copy todir="${xreflect.directory}/classes">
       <fileset dir="${tomcat.classes}"/>
@@ -3047,7 +3047,7 @@ skip.installer property in build.properties" />
           description="Delete the default output folders">
     <delete dir="${tomcat.output}" />
     <!-- Remove the copied catalina.properties -->
-    <delete file="java/org/apache/catalina/startup/catalina.properties" />
+    <delete file="src/main/java/org/apache/catalina/startup/catalina.properties" />
     <ant antfile="${tomcat.jdbc.dir}/build.xml" dir="${tomcat.jdbc.dir}" inheritAll="false" target="clean">
       <property name="tomcat.pool" value="${tomcat.pool}" />
     </ant>
