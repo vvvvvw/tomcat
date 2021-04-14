@@ -49,5 +49,11 @@ public interface ServletContainerInitializer {
      *
      * @throws ServletException If an error occurs
      */
+    /**
+     *  在web应用的启动过程中会接收到通知并传入 在启动过程中classpath中扫描到的符合 定义在@link jakarta.servlet.annotation.HandlesTypes中的类型（继承或者实现，包括抽象类））的所有类
+     * @param c
+     * @param ctx
+     * @throws ServletException
+     */
     void onStartup(Set<Class<?>> c, ServletContext ctx) throws ServletException;
 }
